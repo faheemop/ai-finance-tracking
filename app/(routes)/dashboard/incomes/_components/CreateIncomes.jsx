@@ -22,13 +22,15 @@ function CreateIncomes({ refreshData }) {
   const [emojiIcon, setEmojiIcon] = useState("😀");
   const [openEmojiPicker, setOpenEmojiPicker] = useState(false);
 
-  const [name, setName] = useState();
-  const [amount, setAmount] = useState();
+  const [name, setName] = useState("");
+  const [amount, setAmount] = useState("");
+  const [startDate, setStartDate] = useState(""); // Start date for income
+  const [endDate, setEndDate] = useState("");     // End date for income
 
   const { user } = useUser();
 
   /**
-   * Used to Create New Budget
+   * Used to Create New Income
    */
   const onCreateIncomes = async () => {
     const result = await db
@@ -38,6 +40,8 @@ function CreateIncomes({ refreshData }) {
         amount: amount,
         createdBy: user?.primaryEmailAddress?.emailAddress,
         icon: emojiIcon,
+        startDate: startDate,
+        endDate: endDate,
       })
       .returning({ insertedId: Incomes.id });
 
@@ -46,6 +50,7 @@ function CreateIncomes({ refreshData }) {
       toast("New Income Source Created!");
     }
   };
+
   return (
     <div>
       <Dialog>
@@ -84,15 +89,33 @@ function CreateIncomes({ refreshData }) {
                   <h2 className="text-black font-medium my-1">Source Name</h2>
                   <Input
                     placeholder="e.g. Youtube"
+                    value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
                 </div>
                 <div className="mt-2">
-                  <h2 className="text-black font-medium my-1">Montly Amount</h2>
+                  <h2 className="text-black font-medium my-1">Monthly Amount</h2>
                   <Input
                     type="number"
                     placeholder="e.g. 5000$"
+                    value={amount}
                     onChange={(e) => setAmount(e.target.value)}
+                  />
+                </div>
+                <div className="mt-2">
+                  <h2 className="text-black font-medium my-1">Start Date</h2>
+                  <Input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => setStartDate(e.target.value)}
+                  />
+                </div>
+                <div className="mt-2">
+                  <h2 className="text-black font-medium my-1">End Date</h2>
+                  <Input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => setEndDate(e.target.value)}
                   />
                 </div>
               </div>
@@ -101,8 +124,8 @@ function CreateIncomes({ refreshData }) {
           <DialogFooter className="sm:justify-start">
             <DialogClose asChild>
               <Button
-                disabled={!(name && amount)}
-                onClick={() => onCreateIncomes()}
+                disabled={!(name && amount && startDate && endDate)}
+                onClick={onCreateIncomes}
                 className="mt-5 w-full rounded-full"
               >
                 Create Income Source

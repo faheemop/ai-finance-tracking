@@ -1,4 +1,5 @@
 import {
+  date,
   integer,
   numeric,
   pgTable,
@@ -20,7 +21,10 @@ export const Incomes = pgTable("incomes", {
   amount: varchar("amount").notNull(),
   icon: varchar("icon"),
   createdBy: varchar("createdBy").notNull(),
+  startDate: date("startDate"), // Start date of income
+  endDate: date("endDate"),     // End date of income
 });
+
 export const Expenses = pgTable("expenses", {
   id: serial("id").primaryKey(),
   name: varchar("name").notNull(),

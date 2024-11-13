@@ -56,12 +56,12 @@ function CreateBudget({ refreshData }) {
             cursor-pointer hover:shadow-md"
           >
             <h2 className="text-3xl">+</h2>
-            <h2>Create New Budget</h2>
+            <h2>Create New Budget Category</h2>
           </div>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Create New Budget</DialogTitle>
+            <DialogTitle>Create New Budget cat</DialogTitle>
             <DialogDescription>
               <div className="mt-5">
                 <Button

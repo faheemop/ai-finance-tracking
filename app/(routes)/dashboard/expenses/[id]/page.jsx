@@ -1,14 +1,13 @@
-"use client";
+"use client"
+import React, { useEffect, useState } from "react";
 import { db } from "@/utils/dbConfig";
 import { Budgets, Expenses } from "@/utils/schema";
 import { useUser } from "@clerk/nextjs";
 import { desc, eq, getTableColumns, sql } from "drizzle-orm";
-import React, { useEffect, useState } from "react";
 import BudgetItem from "../../budgets/_components/BudgetItem";
-import AddExpense from "../_components/AddExpense";
 import ExpenseListTable from "../_components/ExpenseListTable";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Pen, PenBox, Trash } from "lucide-react";
+import { ArrowLeft, Trash } from "lucide-react";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -29,13 +28,11 @@ function ExpensesScreen({ params }) {
   const [budgetInfo, setbudgetInfo] = useState();
   const [expensesList, setExpensesList] = useState([]);
   const route = useRouter();
+
   useEffect(() => {
     user && getBudgetInfo();
   }, [user]);
 
-  /**
-   * Get Budget Information
-   */
   const getBudgetInfo = async () => {
     const result = await db
       .select({
@@ -53,9 +50,6 @@ function ExpensesScreen({ params }) {
     getExpensesList();
   };
 
-  /**
-   * Get Latest Expenses
-   */
   const getExpensesList = async () => {
     const result = await db
       .select()
@@ -63,12 +57,8 @@ function ExpensesScreen({ params }) {
       .where(eq(Expenses.budgetId, params.id))
       .orderBy(desc(Expenses.id));
     setExpensesList(result);
-    console.log(result);
   };
 
-  /**
-   * Used to Delete budget
-   */
   const deleteBudget = async () => {
     const deleteExpenseResult = await db
       .delete(Expenses)
@@ -97,7 +87,6 @@ function ExpensesScreen({ params }) {
             budgetInfo={budgetInfo}
             refreshData={() => getBudgetInfo()}
           />
-
           <AlertDialog>
             <AlertDialogTrigger asChild>
               <Button className="flex gap-2 rounded-full" variant="destructive">
@@ -123,28 +112,19 @@ function ExpensesScreen({ params }) {
           </AlertDialog>
         </div>
       </h2>
-      <div
-        className="grid grid-cols-1 
-        md:grid-cols-2 mt-6 gap-5"
-      >
+      <div className="grid grid-cols-1 md:grid-cols-2 mt-6 gap-5">
         {budgetInfo ? (
           <BudgetItem budget={budgetInfo} />
         ) : (
-          <div
-            className="h-[150px] w-full bg-slate-200 
-            rounded-lg animate-pulse"
-          ></div>
+          <div className="h-[150px] w-full bg-slate-200 rounded-lg animate-pulse"></div>
         )}
-        <AddExpense
-          budgetId={params.id}
-          user={user}
-          refreshData={() => getBudgetInfo()}
-        />
       </div>
       <div className="mt-4">
         <ExpenseListTable
           expensesList={expensesList}
           refreshData={() => getBudgetInfo()}
+          budgetId={params.id} // Pass the budgetId to ExpenseListTable
+          user={user}
         />
       </div>
     </div>
